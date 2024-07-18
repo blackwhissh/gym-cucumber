@@ -1,4 +1,4 @@
-package com.epam.trainingservice;
+package com.epam.trainingservice.services;
 
 import com.epam.trainingservice.dto.TrainerSummary;
 import com.epam.trainingservice.dto.TrainerSummaryByMonth;

@@ -1,4 +1,4 @@
-package com.epam.trainingservice;
+package com.epam.trainingservice.services;
 
 import com.epam.trainingservice.entity.Trainer;
 import com.epam.trainingservice.entity.Workload;
