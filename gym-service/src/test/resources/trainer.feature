@@ -21,8 +21,8 @@ Feature: Trainer management
 
   Scenario: Getting a list of trainings by a trainer
     Given I have a username of an existing trainer and a training request
-    When I get the training list
-    Then the training list should be returned successfully
+    When I get trainer's training list
+    Then trainer's training list should be returned successfully
 
   Scenario: Selecting non-existing trainer profile
     Given I have a username of a non-existing trainer

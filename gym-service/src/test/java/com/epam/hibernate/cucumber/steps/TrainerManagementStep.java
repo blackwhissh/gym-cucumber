@@ -120,8 +120,8 @@ public class TrainerManagementStep {
         trainingsRequest = new TrainerTrainingsRequest(null,null,null);
     }
 
-    @When("I get the training list")
-    public void i_get_the_training_list() {
+    @When("I get trainer's training list")
+    public void i_get_trainer_training_list() {
         when(trainerService.getTrainingList(username,trainingsRequest))
                 .thenReturn(ResponseEntity.ok(
                         List.of(new TrainerTrainingsResponse(
@@ -134,8 +134,8 @@ public class TrainerManagementStep {
         trainingsResponse = trainerService.getTrainingList(username,trainingsRequest);
     }
 
-    @Then("the training list should be returned successfully")
-    public void the_training_list_should_be_returned_successfully() {
+    @Then("trainer's training list should be returned successfully")
+    public void trainer_training_list_should_be_returned_successfully() {
         assertNotNull(trainingsResponse);
         assertEquals(200, trainingsResponse.getStatusCode().value());
     }
