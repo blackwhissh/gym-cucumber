@@ -27,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class TraineeManagementStep {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TraineeManagementStep.class);
     private final TraineeService traineeService = mock(TraineeService.class);
     private String username;
     private TraineeRegisterRequest registerRequest;
@@ -41,6 +40,7 @@ public class TraineeManagementStep {
     private ResponseEntity<List<NotAssignedTrainer>> trainersResponse;
     private List<Trainer> assignedTrainers;
     private ResponseEntity<List<TrainerListInfo>> trainerListResponse;
+    private Exception exception;
 
     @Given("I have a trainee registration request")
     public void i_have_a_trainee_registration_request() {
@@ -72,13 +72,15 @@ public class TraineeManagementStep {
         try {
             registerResponse = traineeService.createProfile(registerRequest);
         } catch (IllegalArgumentException e) {
-            LOGGER.info("Captured exception during trainer management scenario" + e);
+            exception = e;
         }
     }
 
     @Then("the trainee profile creation should fail with an error")
     public void the_trainee_profile_creation_should_fail_with_an_error() {
         assertNull(registerResponse);
+        assertNotNull(exception);
+        assertTrue(exception instanceof IllegalArgumentException);
     }
 
     @Given("I have a username of an existing trainee")

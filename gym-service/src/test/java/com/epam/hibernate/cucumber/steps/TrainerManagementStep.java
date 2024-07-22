@@ -12,8 +12,6 @@ import com.epam.hibernate.service.TrainerService;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -26,7 +24,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class TrainerManagementStep {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TrainerManagementStep.class);
     private final TrainerService trainerService = mock(TrainerService.class);
     private String username;
     private TrainerRegisterRequest registerRequest;
@@ -36,6 +33,7 @@ public class TrainerManagementStep {
     private ResponseEntity<TrainerProfileResponse> profileResponse;
     private ResponseEntity<UpdateTrainerResponse> updateResponse;
     private ResponseEntity<List<TrainerTrainingsResponse>> trainingsResponse;
+    private Exception exception;
 
 
     @Given("I have a trainer registration request")
@@ -68,13 +66,15 @@ public class TrainerManagementStep {
         try {
             registerResponse = trainerService.createProfile(registerRequest);
         } catch (IllegalArgumentException e) {
-            LOGGER.info("Captured exception during trainer management scenario" + e);
+            exception = e;
         }
     }
 
     @Then("the trainer profile creation should fail with an error")
     public void the_trainer_profile_creation_should_fail_with_an_error() {
         assertNull(registerResponse);
+        assertNotNull(exception);
+        assertTrue(exception instanceof IllegalArgumentException);
     }
 
     @Given("I have a username of an existing trainer")
@@ -103,8 +103,8 @@ public class TrainerManagementStep {
 
     @When("I update the trainer profile")
     public void i_update_the_trainer_profile() {
-        when(trainerService.updateTrainer(username,updateRequest))
-                .thenReturn(ResponseEntity.ok(new UpdateTrainerResponse("John.Doe","John","Doe",null,true,null)));
+        when(trainerService.updateTrainer(username, updateRequest))
+                .thenReturn(ResponseEntity.ok(new UpdateTrainerResponse("John.Doe", "John", "Doe", null, true, null)));
         updateResponse = trainerService.updateTrainer(username, updateRequest);
     }
 
@@ -117,12 +117,12 @@ public class TrainerManagementStep {
     @Given("I have a username of an existing trainer and a training request")
     public void i_have_a_username_of_an_existing_trainer_and_a_training_request() {
         username = "trainerUsername";
-        trainingsRequest = new TrainerTrainingsRequest(null,null,null);
+        trainingsRequest = new TrainerTrainingsRequest(null, null, null);
     }
 
     @When("I get trainer's training list")
     public void i_get_trainer_training_list() {
-        when(trainerService.getTrainingList(username,trainingsRequest))
+        when(trainerService.getTrainingList(username, trainingsRequest))
                 .thenReturn(ResponseEntity.ok(
                         List.of(new TrainerTrainingsResponse(
                                 "test",
@@ -131,7 +131,7 @@ public class TrainerManagementStep {
                                 10,
                                 "test"
                         ))));
-        trainingsResponse = trainerService.getTrainingList(username,trainingsRequest);
+        trainingsResponse = trainerService.getTrainingList(username, trainingsRequest);
     }
 
     @Then("trainer's training list should be returned successfully")
@@ -149,15 +149,17 @@ public class TrainerManagementStep {
     public void i_select_trainer_profile() {
         when(trainerService.selectTrainerProfile(username)).thenThrow(new IllegalArgumentException("Wrong username"));
         try {
-            registerResponse = trainerService.createProfile(registerRequest);
+            profileResponse = trainerService.selectTrainerProfile(username);
         } catch (IllegalArgumentException e) {
-            LOGGER.info("Captured exception during trainer management scenario" + e);
+            exception = e;
         }
     }
 
     @Then("the trainer profile selection should fail with an error")
     public void the_trainer_profile_selection_should_fail_with_an_error() {
         assertNull(profileResponse);
+        assertNotNull(exception);
+        assertTrue(exception instanceof IllegalArgumentException);
     }
 
     @When("I attempt to update trainer profile")
@@ -166,12 +168,15 @@ public class TrainerManagementStep {
         try {
             updateResponse = trainerService.updateTrainer(username, updateRequest);
         } catch (IllegalArgumentException e) {
-            LOGGER.info("Captured exception during trainer management scenario" + e);
+            exception = e;
         }
     }
+
     @Then("the trainer profile update should fail with an error")
     public void the_trainer_profile_update_should_fail_with_an_error() {
         assertNull(updateResponse);
+        assertNotNull(exception);
+        assertTrue(exception instanceof IllegalArgumentException);
     }
 
 }
