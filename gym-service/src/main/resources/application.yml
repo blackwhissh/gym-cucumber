@@ -136,6 +136,30 @@ info:
     java:
       version: @java.version@
   build-timestamp: @maven.build.timestamp@
+---
+spring:
+  config:
+    activate:
+      on-profile: nodbqueue
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  h2:
+    console:
+      enabled: true
+  activemq:
+    broker-url:
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
 
 ---
 spring:
