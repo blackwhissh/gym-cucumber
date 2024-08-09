@@ -36,6 +36,36 @@ services:
     networks:
       - backend
 
+  authentication-server:
+    build:
+      context: ./authentication-server/
+      dockerfile: Dockerfile
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/hibernate_admin
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 12345678
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
+    depends_on:
+      - db
+      - eureka
+    networks:
+      - backend
+  
+  gateway:
+    build: 
+      context: ./gateway/
+      dockerfile: Dockerfile
+    ports:
+      - "8085:8085"
+    environment:
+      -EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
+    depends_on:
+      - eureka
+    networks:
+      - backend
+
   db:
    image: postgres:13
    environment:
