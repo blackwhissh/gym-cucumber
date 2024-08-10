@@ -17,7 +17,6 @@ spring:
     username: postgres
     password: 12345678
 
-
   activemq:
     broker-url: tcp://localhost:61616
     user: admin
