@@ -1,24 +1,23 @@
 package com.epam.trainingservice.service;
 
-import com.epam.trainingservice.config.LogEntryExit;
 import com.epam.trainingservice.dto.TrainerSummary;
 import com.epam.trainingservice.entity.Summary;
-import com.epam.trainingservice.repository.SummaryRepository;
+import com.epam.trainingservice.service.aws.DynamoDBService;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
 @Service
 public class SummaryService {
-    private final SummaryRepository summaryRepository;
-    private final WorkloadService workloadService;
 
-    public SummaryService(SummaryRepository summaryRepository, WorkloadService workloadService) {
-        this.summaryRepository = summaryRepository;
+    private final WorkloadService workloadService;
+    private final DynamoDBService dynamoDBService;
+
+    public SummaryService(WorkloadService workloadService, DynamoDBService dynamoDBService) {
         this.workloadService = workloadService;
+        this.dynamoDBService = dynamoDBService;
     }
 
-    @LogEntryExit(showArgs = true, showResult = true)
     public void processByUsername(String username) {
         TrainerSummary trainerSummary = workloadService.getTrainerSummary(username);
         Summary summary = new Summary(
@@ -28,10 +27,10 @@ public class SummaryService {
                 trainerSummary.isStatus(),
                 trainerSummary.getYears());
 
-        if (summaryRepository.findByUsername(username) == null) {
-            summaryRepository.save(summary);
+        if (dynamoDBService.findByUsername(username) == null) {
+            dynamoDBService.save(summary);
         } else {
-            summaryRepository.updateDuration(username, summary);
+            dynamoDBService.updateDuration(username, summary);
         }
 
     }
