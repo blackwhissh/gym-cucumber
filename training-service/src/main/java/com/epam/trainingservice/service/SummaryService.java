@@ -27,7 +27,7 @@ public class SummaryService {
                 trainerSummary.isStatus(),
                 trainerSummary.getYears());
 
-        if (dynamoDBService.findByUsername(username) == null) {
+        if (dynamoDBService.findByUsername(username, trainerSummary.isStatus()).isEmpty()) {
             dynamoDBService.save(summary);
         } else {
             dynamoDBService.updateDuration(username, summary);

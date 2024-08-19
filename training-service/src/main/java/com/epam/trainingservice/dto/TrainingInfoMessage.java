@@ -4,6 +4,8 @@ import com.epam.trainingservice.entity.enums.ActionType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class TrainingInfoMessage {
@@ -89,5 +91,43 @@ public class TrainingInfoMessage {
     @Override
     public String toString() {
         return "TrainingInfoRequest{" + "username='" + username + '\'' + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", trainingDate=" + trainingDate + ", duration=" + duration + ", actionType='" + actionType + '\'' + ", isActive=" + isActive + '}';
+    }
+    public static TrainingInfoMessage parseFromString(String str) {
+        TrainingInfoMessage message = new TrainingInfoMessage();
+        str = str.substring(str.indexOf('{') + 1, str.lastIndexOf('}'));
+        String[] keyValuePairs = str.split(", ");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+
+        for (String pair : keyValuePairs) {
+            String[] entry = pair.split("=");
+            try {
+                switch (entry[0].trim()) {
+                    case "username":
+                        message.setUsername(entry[1].trim().replace("'", ""));
+                        break;
+                    case "firstName":
+                        message.setFirstName(entry[1].trim().replace("'", ""));
+                        break;
+                    case "lastName":
+                        message.setLastName(entry[1].trim().replace("'", ""));
+                        break;
+                    case "isActive":
+                        message.setActive(Boolean.parseBoolean(entry[1].trim()));
+                        break;
+                    case "trainingDate":
+                        message.setTrainingDate(dateFormat.parse(entry[1].trim().replace("'", "")));
+                        break;
+                    case "duration":
+                        message.setDuration(Integer.parseInt(entry[1].trim()));
+                        break;
+                    case "actionType":
+                        message.setActionType(ActionType.valueOf(entry[1].trim().replace("'", "")));
+                        break;
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return message;
     }
 }

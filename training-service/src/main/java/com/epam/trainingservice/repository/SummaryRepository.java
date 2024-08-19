@@ -8,6 +8,7 @@
 //import static org.springframework.data.mongodb.core.query.Query.query;
 //import static org.springframework.data.mongodb.core.query.Update.update;
 //
+//This class was used for MongoDB
 //@Repository
 //public class SummaryRepository {
 //    private final MongoTemplate mongoTemplate;

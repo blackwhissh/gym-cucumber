@@ -11,7 +11,7 @@
 //import org.springframework.messaging.Message;
 //import org.springframework.stereotype.Service;
 //
-//
+//This class was used for JMS
 //@Service
 //public class TrainingInfoConsumer {
 //    public static final Logger log = LoggerFactory.getLogger(TrainingInfoConsumer.class);

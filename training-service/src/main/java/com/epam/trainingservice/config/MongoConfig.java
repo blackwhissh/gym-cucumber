@@ -8,6 +8,7 @@
 //import org.springframework.data.mongodb.core.index.Index;
 //import org.springframework.data.mongodb.core.index.IndexOperations;
 //
+//This class was used for MongoDB
 //@Configuration
 //public class MongoConfig {
 //

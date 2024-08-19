@@ -15,6 +15,7 @@
 //import org.springframework.jms.support.converter.MessageType;
 //import org.springframework.transaction.annotation.EnableTransactionManagement;
 //
+//This class was used for JMS
 //@EnableJms
 //@Configuration
 //@EnableTransactionManagement
