@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+//This class is used for local testing purposes
 @Configuration
 @Profile("default")
 public class DynamoDBConfig {

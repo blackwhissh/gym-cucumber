@@ -23,7 +23,7 @@ public class TestController {
         dynamoDBService.listTables();
     }
     @GetMapping("/sqs")
-    public void testSQS() throws JsonProcessingException {
+    public void testSQS() {
         sqsService.receive();
     }
 }

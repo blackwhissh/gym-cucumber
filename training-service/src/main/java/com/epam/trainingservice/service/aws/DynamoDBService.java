@@ -147,31 +147,31 @@ public class DynamoDBService {
     }
 
     public void listTables() {
+        LOGGER.info("Started list tables method");
         ListTablesRequest request;
-        boolean more_tables = true;
-        String last_name = null;
-        while (more_tables) {
+        boolean moreTables = true;
+        String lastName = null;
+        while (moreTables) {
             try {
-                if (last_name == null) {
+                if (lastName == null) {
                     request = new ListTablesRequest().withLimit(10);
                 } else {
                     request = new ListTablesRequest()
                             .withLimit(10)
-                            .withExclusiveStartTableName(last_name);
+                            .withExclusiveStartTableName(lastName);
                 }
-                ListTablesResult table_list = dynamoDB.listTables(request);
-                List<String> table_names = table_list.getTableNames();
-                if (!table_names.isEmpty()) {
-                    for (String cur_name : table_names) {
-                        System.out.format("* %s\n", cur_name);
+                ListTablesResult tableList = dynamoDB.listTables(request);
+                List<String> tableNames = tableList.getTableNames();
+                if (!tableNames.isEmpty()) {
+                    for (String currentName : tableNames) {
+                        LOGGER.info("* " + currentName);
                     }
                 } else {
-                    System.out.println("No tables found!");
-                    System.exit(0);
+                    LOGGER.info("No tables found!");
                 }
-                last_name = table_list.getLastEvaluatedTableName();
-                if (last_name == null) {
-                    more_tables = false;
+                lastName = tableList.getLastEvaluatedTableName();
+                if (lastName == null) {
+                    moreTables = false;
                 }
             } catch (RuntimeException e) {
                 throw new RuntimeException(e);

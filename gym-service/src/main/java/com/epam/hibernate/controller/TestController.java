@@ -19,12 +19,12 @@ public class TestController {
     @GetMapping()
     public void test(){
         try {
-            SendMessageRequest send_msg_request = new SendMessageRequest()
+            SendMessageRequest sendMessageRequest = new SendMessageRequest()
                     .withQueueUrl(QUEUE_URL)
                     .withMessageBody("Hello, this is a test message!")
                     .withDelaySeconds(5);
 
-            sqs.sendMessage(send_msg_request);
+            sqs.sendMessage(sendMessageRequest);
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
 
