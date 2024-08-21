@@ -11,6 +11,7 @@ import com.epam.trainingservice.repository.WorkloadRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.epam.trainingservice.dto.TrainerSummary.MonthSummary;
@@ -50,24 +51,27 @@ public class WorkloadService {
     private void addWorkloadToSummary(TrainerSummary summary, Workload workload) {
         if (workload.getActionType() == ActionType.ADD) {
             YearSummary yearSummary = summary.getYears().stream()
-                    .filter(ys -> ys.getYear() == workload.getYear())
+                    .filter(ys -> ys.getMonths().containsKey(workload.getYear()) )
                     .findFirst()
                     .orElseGet(() -> {
                         YearSummary ys = new YearSummary();
-                        ys.setYear(workload.getYear());
-                        ys.setMonths(new ArrayList<>());
+                        List<MonthSummary> monthSummaries = new ArrayList<>();
+
+                        HashMap<Integer, List<MonthSummary>> monthSummaryMap = new HashMap<>();
+                        monthSummaryMap.put(workload.getYear(), monthSummaries);
+                        ys.setMonths(monthSummaryMap);
                         summary.getYears().add(ys);
                         return ys;
                     });
 
-            MonthSummary monthSummary = yearSummary.getMonths().stream()
-                    .filter(ms -> ms.getMonth() == workload.getMonth())
+            MonthSummary monthSummary = yearSummary.getMonths().get(workload.getYear()).stream()
+                    .filter(ms ->  ms.getMonth() == workload.getMonth())
                     .findFirst()
                     .orElseGet(() -> {
                         MonthSummary ms = new MonthSummary();
                         ms.setMonth(workload.getMonth());
                         ms.setDuration(0);
-                        yearSummary.getMonths().add(ms);
+                        yearSummary.getMonths().get(workload.getYear()).add(ms);
                         return ms;
                     });
 

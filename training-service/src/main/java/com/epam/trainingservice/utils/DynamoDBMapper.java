@@ -5,6 +5,7 @@ import com.epam.trainingservice.dto.TrainerSummary;
 import com.epam.trainingservice.entity.Summary;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,15 +27,17 @@ public class DynamoDBMapper {
             for (Map<String, Object> yearData : yearsData) {
                 String yearKey = yearData.keySet().iterator().next();
                 List<Map<String, Object>> monthsData = (List<Map<String, Object>>) yearData.get(yearKey);
-                List<TrainerSummary.MonthSummary> months = new ArrayList<>();
+                HashMap<Integer, List<TrainerSummary.MonthSummary>> monthSummaryMap = new HashMap<>();
+                List<TrainerSummary.MonthSummary> monthSummaries = new ArrayList<>();
                 if (monthsData != null) {
                     for (Map<String, Object> monthData : monthsData) {
                         int month = (Integer) monthData.get("month");
                         int duration = (Integer) monthData.get("duration");
-                        months.add(new TrainerSummary.MonthSummary(month, duration));
+                        monthSummaries.add(new TrainerSummary.MonthSummary(month, duration));
                     }
                 }
-                years.add(new TrainerSummary.YearSummary(Integer.parseInt(yearKey), months));
+                monthSummaryMap.put(Integer.parseInt(yearKey), monthSummaries);
+                years.add(new TrainerSummary.YearSummary(monthSummaryMap));
             }
         }
 

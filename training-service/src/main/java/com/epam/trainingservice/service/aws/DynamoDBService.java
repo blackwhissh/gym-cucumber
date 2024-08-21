@@ -42,8 +42,11 @@ public class DynamoDBService {
         List<AttributeValue> yearSummaryList = new ArrayList<>();
         for (TrainerSummary.YearSummary yearSummary : yearSummaries) {
             Map<String, AttributeValue> yearSummaryMap = new HashMap<>();
-            yearSummaryMap.put("year", new AttributeValue().withN(String.valueOf(yearSummary.getYear())));
-            yearSummaryMap.put("months", new AttributeValue().withL(serializeMonthSummaries(yearSummary.getMonths())));
+            for (Integer key : yearSummary.getMonths().keySet()) {
+                yearSummaryMap.put(""+key, new AttributeValue().withL(serializeMonthSummaries(yearSummary.getMonths().get(key))));
+            }
+
+            yearSummaryMap.put("months", new AttributeValue().withL());
 
             yearSummaryList.add(new AttributeValue().withM(yearSummaryMap));
         }
@@ -67,7 +70,9 @@ public class DynamoDBService {
             Map<String, AttributeValue> yearSummaryMap = av.getM();
             int year = Integer.parseInt(yearSummaryMap.get("year").getN());
             List<TrainerSummary.MonthSummary> months = deserializeMonthSummaries(yearSummaryMap.get("months").getL());
-            yearSummaries.add(new TrainerSummary.YearSummary(year, months));
+            HashMap<Integer, List<TrainerSummary.MonthSummary>> map = new HashMap<>();
+            map.put(year, months);
+            yearSummaries.add(new TrainerSummary.YearSummary(map));
         }
         return yearSummaries;
     }

@@ -1,6 +1,7 @@
 package com.epam.trainingservice.dto;
 
 import java.util.List;
+import java.util.Map;
 
 public class TrainerSummary {
     private String username;
@@ -60,30 +61,20 @@ public class TrainerSummary {
     }
 
     public static class YearSummary{
-        private int year;
-        private List<MonthSummary> months;
+        private Map<Integer, List<MonthSummary>> months;
 
-        public YearSummary(int year, List<MonthSummary> months) {
-            this.year = year;
+        public YearSummary(Map<Integer, List<MonthSummary>> months) {
             this.months = months;
         }
 
         public YearSummary() {
         }
 
-        public int getYear() {
-            return year;
-        }
-
-        public void setYear(int year) {
-            this.year = year;
-        }
-
-        public List<MonthSummary> getMonths() {
+        public Map<Integer, List<MonthSummary>> getMonths() {
             return months;
         }
 
-        public void setMonths(List<MonthSummary> months) {
+        public void setMonths(Map<Integer, List<MonthSummary>> months) {
             this.months = months;
         }
     }
