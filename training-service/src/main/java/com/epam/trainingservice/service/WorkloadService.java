@@ -51,7 +51,7 @@ public class WorkloadService {
     private void addWorkloadToSummary(TrainerSummary summary, Workload workload) {
         if (workload.getActionType() == ActionType.ADD) {
             YearSummary yearSummary = summary.getYears().stream()
-                    .filter(ys -> ys.getMonths().containsKey(workload.getYear()) )
+                    .filter(ys -> ys.getMonthsSummary().containsKey(workload.getYear()) )
                     .findFirst()
                     .orElseGet(() -> {
                         YearSummary ys = new YearSummary();
@@ -64,14 +64,14 @@ public class WorkloadService {
                         return ys;
                     });
 
-            MonthSummary monthSummary = yearSummary.getMonths().get(workload.getYear()).stream()
+            MonthSummary monthSummary = yearSummary.getMonthsSummary().get(workload.getYear()).stream()
                     .filter(ms ->  ms.getMonth() == workload.getMonth())
                     .findFirst()
                     .orElseGet(() -> {
                         MonthSummary ms = new MonthSummary();
                         ms.setMonth(workload.getMonth());
                         ms.setDuration(0);
-                        yearSummary.getMonths().get(workload.getYear()).add(ms);
+                        yearSummary.getMonthsSummary().get(workload.getYear()).add(ms);
                         return ms;
                     });
 

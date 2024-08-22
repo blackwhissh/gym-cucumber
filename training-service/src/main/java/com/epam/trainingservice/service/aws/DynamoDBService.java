@@ -4,6 +4,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.model.*;
 import com.epam.trainingservice.dto.TrainerSummary;
 import com.epam.trainingservice.entity.Summary;
+import com.epam.trainingservice.exception.DynamoDBException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -42,8 +43,8 @@ public class DynamoDBService {
         List<AttributeValue> yearSummaryList = new ArrayList<>();
         for (TrainerSummary.YearSummary yearSummary : yearSummaries) {
             Map<String, AttributeValue> yearSummaryMap = new HashMap<>();
-            for (Integer key : yearSummary.getMonths().keySet()) {
-                yearSummaryMap.put(""+key, new AttributeValue().withL(serializeMonthSummaries(yearSummary.getMonths().get(key))));
+            for (Integer key : yearSummary.getMonthsSummary().keySet()) {
+                yearSummaryMap.put(""+key, new AttributeValue().withL(serializeMonthSummaries(yearSummary.getMonthsSummary().get(key))));
             }
 
             yearSummaryMap.put("months", new AttributeValue().withL());
@@ -95,8 +96,8 @@ public class DynamoDBService {
             dynamoDB.updateItem(request);
             LOGGER.info("Item updated successfully");
         } catch (ResourceNotFoundException e) {
-            LOGGER.warn("Resource not found");
-            LOGGER.error(e.getMessage());
+            LOGGER.error("Resource not found: " + e.getMessage());
+            throw new DynamoDBException();
         }
     }
 
@@ -124,8 +125,8 @@ public class DynamoDBService {
                         years));
             }
         } catch (Exception e) {
-            LOGGER.warn("Item not found");
-            LOGGER.warn(e.getMessage());
+            LOGGER.error("Item not found: " + e.getMessage());
+            throw new DynamoDBException();
         }
         return Optional.empty();
     }
@@ -143,11 +144,11 @@ public class DynamoDBService {
                 .withItem(item);
 
         try {
-            PutItemResult result = dynamoDB.putItem(request);
-            System.out.println("Item added successfully!");
-            System.out.println(result);
+            dynamoDB.putItem(request);
+            LOGGER.info("Item added successfully!");
         } catch (Exception e) {
-            System.err.println("Failed to create item in DynamoDB table: " + e.getMessage());
+            LOGGER.error("Failed to create item in DynamoDB table: " + e.getMessage());
+            throw new DynamoDBException();
         }
     }
 
@@ -172,14 +173,15 @@ public class DynamoDBService {
                         LOGGER.info("* " + currentName);
                     }
                 } else {
-                    LOGGER.info("No tables found!");
+                    LOGGER.warn("No tables found!");
                 }
                 lastName = tableList.getLastEvaluatedTableName();
                 if (lastName == null) {
                     moreTables = false;
                 }
             } catch (RuntimeException e) {
-                throw new RuntimeException(e);
+                LOGGER.error("Exception occurred during listing tables: " + e.getMessage());
+                throw new DynamoDBException();
             }
         }
     }

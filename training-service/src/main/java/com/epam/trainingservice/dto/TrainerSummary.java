@@ -44,7 +44,7 @@ public class TrainerSummary {
         this.lastName = lastName;
     }
 
-    public String isStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -70,7 +70,7 @@ public class TrainerSummary {
         public YearSummary() {
         }
 
-        public Map<Integer, List<MonthSummary>> getMonths() {
+        public Map<Integer, List<MonthSummary>> getMonthsSummary() {
             return months;
         }
 

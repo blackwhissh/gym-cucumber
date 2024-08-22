@@ -24,10 +24,10 @@ public class SummaryService {
                 Objects.requireNonNull(trainerSummary).getUsername(),
                 trainerSummary.getFirstName(),
                 trainerSummary.getLastName(),
-                trainerSummary.isStatus(),
+                trainerSummary.getStatus(),
                 trainerSummary.getYears());
 
-        if (dynamoDBService.findByUsername(username, trainerSummary.isStatus()).isEmpty()) {
+        if (dynamoDBService.findByUsername(username, trainerSummary.getStatus()).isEmpty()) {
             dynamoDBService.save(summary);
         } else {
             dynamoDBService.updateDuration(username, summary);

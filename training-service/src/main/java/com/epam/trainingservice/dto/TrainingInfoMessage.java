@@ -1,6 +1,7 @@
 package com.epam.trainingservice.dto;
 
 import com.epam.trainingservice.entity.enums.ActionType;
+import com.epam.trainingservice.exception.TrainingInfoMessageParsingException;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -125,7 +126,7 @@ public class TrainingInfoMessage {
                         break;
                 }
             } catch (ParseException e) {
-                e.printStackTrace();
+                throw new TrainingInfoMessageParsingException();
             }
         }
         return message;
