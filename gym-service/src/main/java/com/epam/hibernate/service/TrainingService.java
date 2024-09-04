@@ -12,7 +12,7 @@ import com.epam.hibernate.repository.TraineeRepository;
 import com.epam.hibernate.repository.TrainerRepository;
 import com.epam.hibernate.repository.TrainingRepository;
 import com.epam.hibernate.repository.TrainingTypeRepository;
-import com.epam.hibernate.service.jms.TrainingInfoSender;
+import com.epam.hibernate.service.sqs.SQSService;
 import jakarta.transaction.Transactional;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,15 +27,15 @@ public class TrainingService {
     private final TrainerRepository trainerRepository;
     private final TraineeRepository traineeRepository;
     private final TrainingTypeRepository trainingTypeRepository;
-    private final TrainingInfoSender trainingInfoSender;
+    private final SQSService sqsService;
     private final TrainingRepository trainingRepository;
 
     @Autowired
-    public TrainingService(TrainerRepository trainerRepository, TraineeRepository traineeRepository, TrainingTypeRepository trainingTypeRepository, TrainingInfoSender trainingInfoSender, TrainingRepository trainingRepository) {
+    public TrainingService(TrainerRepository trainerRepository, TraineeRepository traineeRepository, TrainingTypeRepository trainingTypeRepository, SQSService sqsService, TrainingRepository trainingRepository) {
         this.trainerRepository = trainerRepository;
         this.traineeRepository = traineeRepository;
         this.trainingTypeRepository = trainingTypeRepository;
-        this.trainingInfoSender = trainingInfoSender;
+        this.sqsService = sqsService;
         this.trainingRepository = trainingRepository;
     }
 
@@ -63,7 +63,7 @@ public class TrainingService {
         trainerRepository.save(trainer);
         traineeRepository.save(trainee);
 
-        trainingInfoSender.send(new TrainingInfoMessage(training.getTrainer().getUser().getUsername(),
+        sqsService.sendMessage(new TrainingInfoMessage(training.getTrainer().getUser().getUsername(),
                 training.getTrainer().getUser().getFirstName(),
                 training.getTrainer().getUser().getLastName(), training.getTrainer().getUser().getActive(),
                 training.getTrainingDate(), training.getTrainingDuration(),
@@ -81,7 +81,7 @@ public class TrainingService {
             throw new TrainingNotFoundException();
         }
         trainingRepository.delete(trainingId);
-        trainingInfoSender.send(new TrainingInfoMessage(training.getTrainer().getUser().getUsername(),
+        sqsService.sendMessage(new TrainingInfoMessage(training.getTrainer().getUser().getUsername(),
                 training.getTrainer().getUser().getFirstName(),
                 training.getTrainer().getUser().getLastName(),
                 training.getTrainer().getUser().getActive(), training.getTrainingDate(),

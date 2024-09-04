@@ -16,11 +16,28 @@ public class GlobalExceptionHandler {
         response.setMessage("Wrong username, trainer not found");
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+
     @ExceptionHandler(WorkloadNotFoundException.class)
     public ResponseEntity<Object> handleWorkloadNotFoundException(WorkloadNotFoundException e){
         ExceptionResponse response = new ExceptionResponse();
         response.setDateTime(LocalDateTime.now());
         response.setMessage("Workload not found");
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DynamoDBException.class)
+    public ResponseEntity<Object> handleDynamoDBException(DynamoDBException e){
+        ExceptionResponse response = new ExceptionResponse();
+        response.setDateTime(LocalDateTime.now());
+        response.setMessage("Error during DynamoDB method execution");
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(TrainingInfoMessageParsingException.class)
+    public ResponseEntity<Object> handleTrainingInfoMessageParsingException(TrainingInfoMessageParsingException e){
+        ExceptionResponse response = new ExceptionResponse();
+        response.setDateTime(LocalDateTime.now());
+        response.setMessage("Error during Training info message parsing");
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

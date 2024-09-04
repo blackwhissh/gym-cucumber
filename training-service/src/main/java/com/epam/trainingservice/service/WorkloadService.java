@@ -11,6 +11,7 @@ import com.epam.trainingservice.repository.WorkloadRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.epam.trainingservice.dto.TrainerSummary.MonthSummary;
@@ -29,13 +30,14 @@ public class WorkloadService {
     public TrainerSummary getTrainerSummary(String username) {
         Trainer trainer = trainerRepository.findByUsername(username).orElseThrow(TrainerNotFoundException::new);
         List<Workload> workloads = workloadRepository.findByTrainerOrderByYearAsc(trainer);
+        String status = trainer.getActive() ? "active" : "inactive";
 
 
         TrainerSummary summary = new TrainerSummary();
         summary.setUsername(trainer.getUsername());
         summary.setFirstName(trainer.getFirstName());
         summary.setLastName(trainer.getLastName());
-        summary.setStatus(trainer.getActive());
+        summary.setStatus(status);
         summary.setYears(new ArrayList<>());
 
         for (Workload workload : workloads) {
@@ -49,31 +51,33 @@ public class WorkloadService {
     private void addWorkloadToSummary(TrainerSummary summary, Workload workload) {
         if (workload.getActionType() == ActionType.ADD) {
             YearSummary yearSummary = summary.getYears().stream()
-                    .filter(ys -> ys.getYear() == workload.getYear())
+                    .filter(ys -> ys.getMonthsSummary().containsKey(workload.getYear()) )
                     .findFirst()
                     .orElseGet(() -> {
                         YearSummary ys = new YearSummary();
-                        ys.setYear(workload.getYear());
-                        ys.setMonths(new ArrayList<>());
+                        List<MonthSummary> monthSummaries = new ArrayList<>();
+
+                        HashMap<Integer, List<MonthSummary>> monthSummaryMap = new HashMap<>();
+                        monthSummaryMap.put(workload.getYear(), monthSummaries);
+                        ys.setMonths(monthSummaryMap);
                         summary.getYears().add(ys);
                         return ys;
                     });
 
-            MonthSummary monthSummary = yearSummary.getMonths().stream()
-                    .filter(ms -> ms.getMonth() == workload.getMonth())
+            MonthSummary monthSummary = yearSummary.getMonthsSummary().get(workload.getYear()).stream()
+                    .filter(ms ->  ms.getMonth() == workload.getMonth())
                     .findFirst()
                     .orElseGet(() -> {
                         MonthSummary ms = new MonthSummary();
                         ms.setMonth(workload.getMonth());
                         ms.setDuration(0);
-                        yearSummary.getMonths().add(ms);
+                        yearSummary.getMonthsSummary().get(workload.getYear()).add(ms);
                         return ms;
                     });
 
             monthSummary.setDuration(monthSummary.getDuration() + workload.getTrainingDuration());
         }
     }
-
 
     public TrainerSummaryByMonth getTrainerSummaryByMonthAndYear(String username, int year, int month) {
         Trainer trainer = trainerRepository.findByUsername(username).orElseThrow(TrainerNotFoundException::new);

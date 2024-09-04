@@ -1,14 +1,15 @@
 package com.epam.trainingservice.dto;
 
 import java.util.List;
+import java.util.Map;
 
 public class TrainerSummary {
     private String username;
     private String firstName;
     private String lastName;
-    private boolean status;
+    private String status;
     private List<YearSummary> years;
-    public TrainerSummary(String username, String firstName, String lastName, boolean status, List<YearSummary> years) {
+    public TrainerSummary(String username, String firstName, String lastName, String status, List<YearSummary> years) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -43,11 +44,11 @@ public class TrainerSummary {
         this.lastName = lastName;
     }
 
-    public boolean isStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -60,30 +61,20 @@ public class TrainerSummary {
     }
 
     public static class YearSummary{
-        private int year;
-        private List<MonthSummary> months;
+        private Map<Integer, List<MonthSummary>> months;
 
-        public YearSummary(int year, List<MonthSummary> months) {
-            this.year = year;
+        public YearSummary(Map<Integer, List<MonthSummary>> months) {
             this.months = months;
         }
 
         public YearSummary() {
         }
 
-        public int getYear() {
-            return year;
-        }
-
-        public void setYear(int year) {
-            this.year = year;
-        }
-
-        public List<MonthSummary> getMonths() {
+        public Map<Integer, List<MonthSummary>> getMonthsSummary() {
             return months;
         }
 
-        public void setMonths(List<MonthSummary> months) {
+        public void setMonths(Map<Integer, List<MonthSummary>> months) {
             this.months = months;
         }
     }
