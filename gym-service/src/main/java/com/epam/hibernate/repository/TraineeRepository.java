@@ -30,8 +30,9 @@ public class TraineeRepository {
 
     @Transactional
     public Trainee save(Trainee trainee) {
+        Trainee merge = entityManager.merge(trainee);
         logger.info("Trainee saved successfully");
-        return entityManager.merge(trainee);
+        return merge;
     }
 
     public Trainee selectByUsername(String username) {

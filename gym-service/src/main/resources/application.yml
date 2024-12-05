@@ -16,7 +16,9 @@ spring:
   datasource:
     username: postgres
     password: 12345678
-
+aws:
+  sqs:
+    url: https://sqs.us-east-1.amazonaws.com/654654276482/gym-main
   activemq:
     broker-url: tcp://localhost:61616
     user: admin
@@ -138,5 +140,29 @@ info:
 
 ---
 spring:
+  config:
+    activate:
+      on-profile: aws
+  datasource:
+    url: jdbc:postgresql://gymdatabase.cxokgios0ef2.us-east-1.rds.amazonaws.com:5432/gymdatabase
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: 12345678
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+info:
+  app:
+    name: @project.name@
+    description: admin profile
+    version: @project.version@
+    java:
+      version: @java.version@
+  build-timestamp: @maven.build.timestamp@
+
+
+---
+spring:
   profiles:
-    active: admin
+    active: aws

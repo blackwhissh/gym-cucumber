@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/v1/admin/training", consumes = {"application/JSON"}, produces = {"application/JSON", "application/XML"})
 @CrossOrigin(origins = "*", maxAge = 3600)
-@PreAuthorize("hasRole('ROLE_ADMIN')")
+//@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class TrainingController {
     private final TrainingService trainingService;
     Counter addCounter;

@@ -6,9 +6,9 @@ public class TrainerSummary {
     private String username;
     private String firstName;
     private String lastName;
-    private boolean status;
+    private String status;
     private List<YearSummary> years;
-    public TrainerSummary(String username, String firstName, String lastName, boolean status, List<YearSummary> years) {
+    public TrainerSummary(String username, String firstName, String lastName, String status, List<YearSummary> years) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -43,11 +43,11 @@ public class TrainerSummary {
         this.lastName = lastName;
     }
 
-    public boolean isStatus() {
+    public String isStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

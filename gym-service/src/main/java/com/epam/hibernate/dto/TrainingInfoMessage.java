@@ -82,4 +82,17 @@ public class TrainingInfoMessage {
     public void setActionType(ActionType actionType) {
         this.actionType = actionType;
     }
+
+    @Override
+    public String toString() {
+        return "TrainingInfoMessage{" +
+                "username='" + username + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", isActive=" + isActive +
+                ", trainingDate=" + trainingDate +
+                ", duration=" + duration +
+                ", actionType=" + actionType +
+                '}';
+    }
 }

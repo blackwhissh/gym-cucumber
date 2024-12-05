@@ -29,13 +29,14 @@ public class WorkloadService {
     public TrainerSummary getTrainerSummary(String username) {
         Trainer trainer = trainerRepository.findByUsername(username).orElseThrow(TrainerNotFoundException::new);
         List<Workload> workloads = workloadRepository.findByTrainerOrderByYearAsc(trainer);
+        String status = trainer.getActive() ? "active" : "inactive";
 
 
         TrainerSummary summary = new TrainerSummary();
         summary.setUsername(trainer.getUsername());
         summary.setFirstName(trainer.getFirstName());
         summary.setLastName(trainer.getLastName());
-        summary.setStatus(trainer.getActive());
+        summary.setStatus(status);
         summary.setYears(new ArrayList<>());
 
         for (Workload workload : workloads) {
@@ -73,7 +74,6 @@ public class WorkloadService {
             monthSummary.setDuration(monthSummary.getDuration() + workload.getTrainingDuration());
         }
     }
-
 
     public TrainerSummaryByMonth getTrainerSummaryByMonthAndYear(String username, int year, int month) {
         Trainer trainer = trainerRepository.findByUsername(username).orElseThrow(TrainerNotFoundException::new);
